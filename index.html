@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EC Startseite - Secure Access</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        /* --- DESIGN (Basierend auf deinen Vorlagen) --- */
+        html { scroll-behavior: smooth; scroll-padding-top: 100px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-image: url('https://cdn.discordapp.com/attachments/1037836675147116655/1466127698538528769/ec2.png?ex=697b9d52&is=697a4bd2&hm=19b433f52b42953e12552c0279484810bb2471c355281f1a0ab5bc0d7f50b208&'); 
+            background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed; 
+            background-color: #1a1a1a; color: #e0e0e0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; min-height: 100vh; 
+        }
+
+        header { background-color: rgba(13, 13, 13, 0.95); padding: 1rem 0; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); position: sticky; top: 0; z-index: 1000; }
+        nav { max-width: 1200px; margin: 0 auto; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; }
+        nav a, nav button { color: #e0e0e0; text-decoration: none; margin: 0 1.5rem; transition: color 0.3s; background: none; border: none; font-size: 1rem; cursor: pointer; font-family: inherit;}
+        nav a:hover, nav button:hover { color: #ff7c01; }
+        
+        .login-container { max-width: 400px; margin: 8rem auto; padding: 2.5rem; background-color: rgba(13, 13, 13, 0.9); border-radius: 8px; border: 1px solid #333; text-align: center; }
+        .auth-btn { width: 100%; padding: 0.8rem; background-color: #5865F2; color: #fff; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        
+        .hero { max-width: 1200px; margin: 4rem auto; padding: 3rem 2rem; text-align: center; background-color: rgba(0,0,0,0.85); border-radius: 10px; border: 1px solid #333; }
+        .hero h1 { font-size: 3rem; color: #ff7c01; }
+        
+        .docs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+        .doc-card { background-color: rgba(255, 255, 255, 0.05); border: 1px solid #ff7c01; padding: 1.2rem; border-radius: 5px; text-decoration: none; color: #e0e0e0; display: flex; justify-content: space-between; transition: 0.3s; }
+        .doc-card:hover { background-color: #ff7c01; color: #000; transform: translateY(-3px); }
+
+        /* Admin Bereich Style */
+        #admin-panel { background: rgba(255, 0, 0, 0.1); border: 1px dashed #ff4444; margin-top: 2rem; padding: 1.5rem; border-radius: 5px; display: none; }
+        .admin-input { padding: 0.5rem; border-radius: 3px; border: 1px solid #ff7c01; background: #222; color: white; width: 250px; }
+        .admin-btn { padding: 0.5rem 1rem; background: #ff7c01; border: none; cursor: pointer; font-weight: bold; }
+
+        footer { text-align: center; padding: 2rem; color: #808080; }
+        #loading-screen { position: fixed; inset: 0; background: #1a1a1a; z-index: 2000; display: flex; justify-content: center; align-items: center; color: #ff7c01; }
+    </style>
+</head>
+<body>
+
+    <div id="loading-screen">Verifiziere Com-Link...</div>
+
+    <div class="login-container" id="login-container" style="display: none;">
+        <h2 style="color:#ff7c01">EC Terminal</h2>
+        <p style="margin-bottom:20px">Identifikation erforderlich.</p>
+        <button id="discord-login" class="auth-btn">Login via Discord</button>
+    </div>
+
+    <div id="website-content" style="display: none;">
+        <header>
+            <nav>
+                <img src="https://cdn.discordapp.com/attachments/1037836675147116655/1466129016032333834/EC_Logo.png" alt="Logo" style="height: 50px;">
+                <div>
+                    <a href="#home">Zentrale</a>
+                    <a href="#Dokumente">Archiv</a>
+                    <button id="logout-btn">Abmelden</button>
+                </div>
+            </nav>
+        </header>
+
+        <main>
+            <section id="home" class="hero">
+                <h1 id="user-greeting">Willkommen</h1>
+                <p>Status: Autorisierter Zugriff</p>
+
+                <div id="admin-panel">
+                    <h3 style="color: #ff4444; margin-bottom: 10px;">Admin-Konsole</h3>
+                    <input type="text" id="new-id" class="admin-input" placeholder="Discord ID eintragen">
+                    <button id="add-id" class="admin-btn">Whitelist ergänzen</button>
+                    <p style="font-size: 0.7rem; margin-top: 5px;">Nur für autorisierte Offiziere sichtbar.</p>
+                </div>
+            </section>
+            
+            <section id="Dokumente" class="hero">
+                <h1>Einheitsdokumente</h1>
+                <div class="docs-grid">
+                    <a href="https://docs.google.com/document/d/1o-2MQhZGkoRgito3_VZMgjbFw91G8nzFaV0tux4Fp6o/edit" target="_blank" class="doc-card">
+                        <span>🔨 Technisches Handbuch</span><span>➜</span>
+                    </a>
+                    </div>
+            </section>
+        </main>
+
+        <footer><p>&copy; Leck Eier [Keine Rechte vorbehalten].</p></footer>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://vbjjhzukxwleqvfxejju.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // Dein Key
+        
+        // DEINE ID HIER EINTRAGEN (Damit du das Admin-Panel siehst)
+        const ADMIN_IDS = ['850288059722891264']; 
+
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function checkAccess(user) {
+            const discordId = user.identities.find(id => id.provider === 'discord')?.identity_id;
+            
+            // 1. Check ob Admin
+            if (ADMIN_IDS.includes(discordId)) {
+                document.getElementById('admin-panel').style.display = 'block';
+                return true;
+            }
+
+            // 2. Check Supabase Tabelle "whitelist"
+            const { data, error } = await supabase
+                .from('whitelist')
+                .select('discord_id')
+                .eq('discord_id', discordId);
+
+            return data && data.length > 0;
+        }
+
+        async function toggleView(session) {
+            const loadingScreen = document.getElementById('loading-screen');
+            loadingScreen.style.display = 'none';
+
+            if (session) {
+                const hasAccess = await checkAccess(session.user);
+                if (hasAccess) {
+                    document.getElementById('login-container').style.display = 'none';
+                    document.getElementById('website-content').style.display = 'block';
+                    document.getElementById('user-greeting').innerText = `Willkommen, ${session.user.user_metadata.full_name}`;
+                } else {
+                    alert("Zugriff verweigert: Du bist nicht auf der Whitelist.");
+                    await supabase.auth.signOut();
+                    window.location.reload();
+                }
+            } else {
+                document.getElementById('login-container').style.display = 'block';
+                document.getElementById('website-content').style.display = 'none';
+            }
+        }
+
+        // Admin: Neue ID hinzufügen
+        document.getElementById('add-id').addEventListener('click', async () => {
+            const idInput = document.getElementById('new-id').value;
+            if(!idInput) return;
+
+            const { error } = await supabase
+                .from('whitelist')
+                .insert([{ discord_id: idInput }]);
+
+            if (error) alert("Fehler: " + error.message);
+            else {
+                alert("ID erfolgreich autorisiert!");
+                document.getElementById('new-id').value = '';
+            }
+        });
+
+        // Auth Logic
+        document.getElementById('discord-login').addEventListener('click', () => {
+            supabase.auth.signInWithOAuth({ provider: 'discord', options: { redirectTo: window.location.href }});
+        });
+
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            await supabase.auth.signOut();
+            window.location.reload();
+        });
+
+        supabase.auth.onAuthStateChange((event, session) => { toggleView(session); });
+    </script>
+</body>
+</html>
